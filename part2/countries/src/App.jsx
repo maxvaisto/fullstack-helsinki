@@ -52,10 +52,9 @@ function App() {
                   setTargetCountry([response])
                 })
             })
-
         })
       }
-      else if (filteredCountries.length > 1) {
+      else if (filteredCountries.length > 1 || filteredCountries.length === 0) {
         setTargetCountry(filteredCountries)
       }
       if (clickedCountry){
