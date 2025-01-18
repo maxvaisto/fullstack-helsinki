@@ -1,3 +1,3 @@
 [submodule "part3/fullstack_part3"]
-	path = part3/fullstack_part3
+	path = part3/backend
 	url = https://github.com/maxvaisto/fullstack_part3.git
