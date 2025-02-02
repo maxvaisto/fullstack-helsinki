@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "node --test"
+    "start": "cross-env BLOG_ENV=production node index.js",
+    "dev": "cross-env BLOG_ENV=development nodemon index.js",
+    "test": "cross-env  BLOG_ENV=test node --test"
   },
   "author": "",
   "license": "ISC",
@@ -14,8 +14,13 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "lodash": "^4.17.21",
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.5",
     "nodemon": "^3.1.9"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "supertest": "^7.0.0"
   }
 }
