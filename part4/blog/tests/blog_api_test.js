@@ -90,6 +90,39 @@ test('post request with no title and url returns 400', async () => {
 
 })
 
+
+test('delete request deletes a blog', async () => {
+  const blogsAtStart = await Blog.find({})
+  const blogToDelete = blogsAtStart[0]
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+  const blogsAtEnd = await Blog.find({})
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
+})
+
+
+test('update likes for a blog', async() => {
+  const blogsAtStart = await Blog.find({})
+  const updatedBlog = {
+    // id: blogsAtStart[-1].id,
+    title: blogsAtStart[0].title,
+    author: blogsAtStart[0].author,
+    url: blogsAtStart[0].url,
+    likes: blogsAtStart[0].likes + 1}
+
+  await api
+    .put(`/api/blogs/${blogsAtStart[0].id}`)
+    .send(updatedBlog)
+    .expect(201)
+
+  const refreshedBlog = await Blog.findById(blogsAtStart[0].id)
+  const blogsAtEnd = await Blog.find({})
+
+  assert.strictEqual(refreshedBlog.likes, updatedBlog.likes)
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
