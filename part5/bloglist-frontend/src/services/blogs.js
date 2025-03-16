@@ -24,4 +24,31 @@ const create = async newObject => {
   return response.data
 }
 
-export default { getAll, setToken, create }
+const update = (id, newObject) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const requestObject = {
+    user: newObject.user.id,
+    likes: newObject.likes,
+    author: newObject.author,
+    title: newObject.title,
+    url: newObject.url
+  }
+
+  console.log("newObject:",requestObject)
+  console.log("url:",`${baseUrl}/${id.toString()}`)
+  const request = axios.put(`${baseUrl}/${id.toString()}`, requestObject, config)
+  return request.then(response => response.data)
+}
+
+const remove = (id) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const request = axios.delete(`${baseUrl}/${id}`, config)
+  return request.then(response => response.data)
+}
+
+export default { getAll, setToken, create, update, remove}

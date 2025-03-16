@@ -2,23 +2,21 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogForm from "./components/BlogForm.jsx";
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newBlog, setNewBlog] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+  const [blogsVisible, setBlogsVisible] = useState(false)
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [user])
+  const updateBlogList = async () => {
+    blogService.getAll()
+      .then(blogs => setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
+  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
@@ -28,6 +26,18 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  useEffect(() => {
+    if (user === null) {
+      return
+    }
+    updateBlogList()
+  }, [user])
+
+  const updateBlog = async (id, updatedBlog) => {
+    const updated = await blogService.update(id, updatedBlog)
+    updateBlogList()
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -54,28 +64,28 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (id) => {
+
+    if (window.confirm("Are you sure you want to delete this blog?")) {
+      await blogService.remove(id)
+      updateBlogList()
+      setSuccessMessage(`blog deleted`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    }
+    
+  }
+
   const logout = () => {
     window.localStorage.removeItem('loggedNoteappUser')
     setUser(null)
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-
-    const blogObject = {
-      title: newBlog,
-      author: newAuthor,
-      url: newUrl
-    }
-
-
-    const returnedBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(returnedBlog))
-    setNewBlog('')
-    setNewAuthor('')
-    setNewUrl('')
-
-    setSuccessMessage(`a new blog ${newBlog} by ${newAuthor} added`)
+  const addBlog = async (blogObject) => {
+    await blogService.create(blogObject)
+    updateBlogList()
+    setSuccessMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
     setTimeout(() => {
       setSuccessMessage(null)
     }, 5000)
@@ -111,47 +121,33 @@ const App = () => {
     )
   }
 
+  const addBlogForm = () => {
+    const hideWhenVisible = { display: blogsVisible ? 'none' : '' }
+    const showWhenVisible = { display: blogsVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setBlogsVisible(true)}>add blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <h2>create new</h2>
+
+          <BlogForm createBlog={addBlog}/>
+          <button onClick={() => setBlogsVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
       <h2>blogs</h2>
       {successMessage && <div style={{color: 'green'}}>{successMessage}</div>}
       <p>{user.name} logged in <button onClick={logout}>logout</button></p>
-      <h2>create new</h2>
-
-      <form onSubmit={addBlog}>
-        <div>
-          title:
-          <input
-            type="text"
-            value={newBlog}
-            name="Blog"
-            onChange={({target}) => setNewBlog(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-            type="text"
-            value={newAuthor}
-            name="Author"
-            onChange={({target}) => setNewAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            type="text"
-            value={newUrl}
-            name="Url"
-            onChange={({target}) => setNewUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-
+      {addBlogForm()}
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog}/>
+        <Blog key={blog.id} blog={blog} update={updateBlog} remove={deleteBlog}/>
       )}
     </div>
   )
