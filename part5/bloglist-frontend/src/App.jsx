@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import BlogForm from "./components/BlogForm.jsx";
+import BlogForm from './components/BlogForm.jsx'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -66,15 +66,15 @@ const App = () => {
 
   const deleteBlog = async (id) => {
 
-    if (window.confirm("Are you sure you want to delete this blog?")) {
+    if (window.confirm('Are you sure you want to delete this blog?')) {
       await blogService.remove(id)
       updateBlogList()
-      setSuccessMessage(`blog deleted`)
+      setSuccessMessage('blog deleted')
       setTimeout(() => {
         setSuccessMessage(null)
       }, 5000)
     }
-    
+
   }
 
   const logout = () => {
@@ -94,7 +94,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        {errorMessage && <div style={{color: 'red'}}>{errorMessage}</div>}
+        {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
         <h2>log in to application</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -143,7 +143,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      {successMessage && <div style={{color: 'green'}}>{successMessage}</div>}
+      {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
       <p>{user.name} logged in <button onClick={logout}>logout</button></p>
       {addBlogForm()}
       {blogs.map(blog =>

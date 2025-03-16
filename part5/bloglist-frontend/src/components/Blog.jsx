@@ -1,6 +1,7 @@
-import { useState} from "react";
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 
-const Blog = ({ blog, update, remove}) => {
+const Blog = ({ blog, update, remove }) => {
 
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -39,10 +40,16 @@ const Blog = ({ blog, update, remove}) => {
       <p> {blog.url} </p>
       <p> {blog.likes}
         <button onClick={like}>like </button> </p>
-      <p> {blog.user ? blog.user.name : ""} </p>
+      <p> {blog.user ? blog.user.name : ''} </p>
     </div>
     <button onClick={() => remove(blog.id)}>remove</button>
   </div>)
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  update: PropTypes.func.isRequired,
+  remove: PropTypes.func.isRequired
 }
 
 
