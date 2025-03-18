@@ -16,7 +16,7 @@ const Blog = ({ blog, update, remove }) => {
   }
 
   if (!isExpanded) {
-    return (<div style={blogStyle}>
+    return (<div style={blogStyle} className="togglableContent">
       <div>
         {blog.title} {blog.author} <button onClick={() => setIsExpanded(true)}>view</button>
       </div>
@@ -27,12 +27,9 @@ const Blog = ({ blog, update, remove }) => {
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
     update(blog.id, updatedBlog)
 
-    setIsExpanded(false)
-    setIsExpanded(true)
-
   }
   // Show the user's name if it exists
-  return (<div style={blogStyle}>
+  return (<div style={blogStyle} className="togglableContent">
     <div>
       <p> {blog.title} {blog.author}
         <button onClick={() => setIsExpanded(false)}>hide</button>
