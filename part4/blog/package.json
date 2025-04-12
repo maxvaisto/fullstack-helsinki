@@ -5,6 +5,7 @@
   "scripts": {
     "start": "cross-env BLOG_ENV=production node index.js",
     "dev": "cross-env BLOG_ENV=development nodemon index.js",
+    "test-run": "cross-env  BLOG_ENV=test nodemon index.js",
     "test": "cross-env  BLOG_ENV=test node --test"
   },
   "author": "",

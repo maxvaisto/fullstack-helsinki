@@ -96,7 +96,7 @@ const App = () => {
       <div>
         {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
         <h2>log in to application</h2>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} name="loginForm">
           <div>
             username
             <input
